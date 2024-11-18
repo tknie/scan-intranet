@@ -29,6 +29,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/tatsushid/go-fastping"
 	"github.com/tknie/flynn"
 	"github.com/tknie/flynn/common"
 	"github.com/tknie/log"
@@ -132,26 +133,52 @@ func ScanIntranet(create bool) error {
 			if lerr != nil {
 				fmt.Println("Cannot resolv", vals[0])
 			}
+			lerr = ping(vals[0])
+			if lerr != nil {
+				fmt.Println("Cannot ping", vals[0])
+			}
 			log.Log.Debugf(vals[0], laddr, state, complete, now.Format(timeFormat))
 			line, complete, err = bufReader.ReadLine()
 			hostname := "<unresolved>"
 			if len(laddr) > 0 {
 				hostname = laddr[0]
-			}
-			record := &hostEntry{vals[0], hostname, now, state}
+				record := &hostEntry{vals[0], hostname, now, state}
 
-			insertPic := &common.Entries{Fields: insertFieldList,
-				DataStruct: record,
-				Values:     [][]any{{record}}}
-			_, err := id.Insert(tableName, insertPic)
-			if err != nil {
-				fmt.Println("Record insert error:", err)
-				return err
+				insertPic := &common.Entries{Fields: insertFieldList,
+					DataStruct: record,
+					Values:     [][]any{{record}}}
+				_, err := id.Insert(tableName, insertPic)
+				if err != nil {
+					fmt.Println("Record insert error:", err)
+					return err
+				}
 			}
 		}
 	}
 	if err != nil && err != io.EOF {
 		fmt.Println(err.Error())
+		return err
+	}
+	return nil
+}
+
+func ping(host string) error {
+	p := fastping.NewPinger()
+	ra, err := net.ResolveIPAddr("ip4:icmp", host)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	p.AddIPAddr(ra)
+	p.OnRecv = func(addr *net.IPAddr, rtt time.Duration) {
+		fmt.Printf("IP Addr: %s receive, RTT: %v\n", addr.String(), rtt)
+	}
+	p.OnIdle = func() {
+		fmt.Println("finish")
+	}
+	err = p.Run()
+	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 	return nil
