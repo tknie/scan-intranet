@@ -24,6 +24,8 @@ github.com/godror/godror v0.44.7 h1:fGxtxozidwBR3C1FVTrMiH77maOnMA4HqltDS/YM7O0=
 github.com/godror/godror v0.44.7/go.mod h1:KJwMtQpK9o3WdEiNw7qvgSk827YDLj9MV/bXSzvUzlo=
 github.com/godror/godror v0.45.1 h1:MnnUcU9/9rpLV3/Amv6kiT82pAlR0v5MFk/EXdKrblU=
 github.com/godror/godror v0.45.1/go.mod h1:44hxVDzvFSwc+yGyRM+riCLNAY5SwZkUfLzVTh5MXCg=
+github.com/godror/godror v0.45.2 h1:rkXxmD+/QdKz0PTOuSfEmWNFCHnKpWS8b8HUl+5V7us=
+github.com/godror/godror v0.45.2/go.mod h1:44hxVDzvFSwc+yGyRM+riCLNAY5SwZkUfLzVTh5MXCg=
 github.com/godror/knownpb v0.2.0 h1:RJLntksFiKUHoUz3wCCJ8+DBjxSLYHYDNl1xRz0/gXI=
 github.com/godror/knownpb v0.2.0/go.mod h1:kRahRJBwqTenpVPleymQ4k433Xz2Wuy7dOeFSuEpmkI=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
@@ -82,6 +84,8 @@ github.com/tknie/flynn v0.0.0-20240916071950-d37eaf83c171 h1:akkNYVtmmfc0DwY2ieZ
 github.com/tknie/flynn v0.0.0-20240916071950-d37eaf83c171/go.mod h1:/YQ3Uv8MGIZ/TMm+escaL83A193ScCVx0t/HNltWrn4=
 github.com/tknie/flynn v0.0.0-20241112204322-d282d431f942 h1:AgLtyWKJUDdCkceIT/UEfqIOzyYRpsaAgQpXf6AtOmc=
 github.com/tknie/flynn v0.0.0-20241112204322-d282d431f942/go.mod h1:4tcE5swWzNzzo3f68qpZZwPxP+Znsh5E1L4032BYwSI=
+github.com/tknie/flynn v0.0.0-20241120133938-60287a1a882f h1:2zOdabeQ2ENoekzidjzK+5bCaWvhMx+g7B/yKNBVa7I=
+github.com/tknie/flynn v0.0.0-20241120133938-60287a1a882f/go.mod h1:MJU/oFfRDaAOEEwYuzWAc0/e7k+GxYa9MCK0G5u8pn8=
 github.com/tknie/log v0.0.0-20231006083545-fabe25f4fb0e h1:aNgWs7XTC4vcIcmzQT496neJexEvjx0Kv2/ho2xUlgo=
 github.com/tknie/log v0.0.0-20231006083545-fabe25f4fb0e/go.mod h1:W67unT0xxqTLc9tyxpdV1lED/JuD0veFgxT/astdxt4=
 github.com/tknie/log v0.0.0-20241117202403-65556e62b83d h1:B2kRbca8940u2AVM9yyU1fMScDqFz04B56rz4WnMNgk=
