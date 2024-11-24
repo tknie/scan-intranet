@@ -86,6 +86,8 @@ github.com/tknie/flynn v0.0.0-20241112204322-d282d431f942 h1:AgLtyWKJUDdCkceIT/U
 github.com/tknie/flynn v0.0.0-20241112204322-d282d431f942/go.mod h1:4tcE5swWzNzzo3f68qpZZwPxP+Znsh5E1L4032BYwSI=
 github.com/tknie/flynn v0.0.0-20241120133938-60287a1a882f h1:2zOdabeQ2ENoekzidjzK+5bCaWvhMx+g7B/yKNBVa7I=
 github.com/tknie/flynn v0.0.0-20241120133938-60287a1a882f/go.mod h1:MJU/oFfRDaAOEEwYuzWAc0/e7k+GxYa9MCK0G5u8pn8=
+github.com/tknie/flynn v0.0.0-20241123200345-8c779af234a3 h1:QbJU7fJgcgjZRK7zlfYFwogCrZBF9/GR3NYkTjk7JOc=
+github.com/tknie/flynn v0.0.0-20241123200345-8c779af234a3/go.mod h1:MJU/oFfRDaAOEEwYuzWAc0/e7k+GxYa9MCK0G5u8pn8=
 github.com/tknie/log v0.0.0-20231006083545-fabe25f4fb0e h1:aNgWs7XTC4vcIcmzQT496neJexEvjx0Kv2/ho2xUlgo=
 github.com/tknie/log v0.0.0-20231006083545-fabe25f4fb0e/go.mod h1:W67unT0xxqTLc9tyxpdV1lED/JuD0veFgxT/astdxt4=
 github.com/tknie/log v0.0.0-20241117202403-65556e62b83d h1:B2kRbca8940u2AVM9yyU1fMScDqFz04B56rz4WnMNgk=

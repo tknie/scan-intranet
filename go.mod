@@ -5,7 +5,7 @@ go 1.23.0
 require (
 	github.com/stretchr/testify v1.9.0
 	github.com/tatsushid/go-fastping v0.0.0-20160109021039-d7bb493dee3e
-	github.com/tknie/flynn v0.0.0-20241120133938-60287a1a882f
+	github.com/tknie/flynn v0.0.0-20241123200345-8c779af234a3
 	github.com/tknie/log v0.0.0-20241117202403-65556e62b83d
 )
 
