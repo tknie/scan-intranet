@@ -38,5 +38,5 @@ func main() {
 	}
 	flag.Parse()
 
-	scanintranet.ScanIntranet(create)
+	scanintranet.ScanIntranet(create, false)
 }

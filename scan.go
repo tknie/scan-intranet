@@ -27,9 +27,9 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 	"time"
 
-	"github.com/tatsushid/go-fastping"
 	"github.com/tknie/flynn"
 	"github.com/tknie/flynn/common"
 	"github.com/tknie/log"
@@ -38,13 +38,27 @@ import (
 const timeFormat = "2006-01-02 15:04:05"
 const tableName = "ScanIntranet"
 
-var insertFieldList = []string{"IP", "Hostname", "ScanTime", "State"}
+var insertFieldList = []string{"IP", "MACADDR", "Hostname",
+	"ScanTime", "State", "Generateon"}
+
+var stateMap = make(map[string]bool)
+
+var wg sync.WaitGroup
 
 type hostEntry struct {
-	IP       string
-	Hostname string
-	ScanTime time.Time
-	State    string
+	IP         string
+	MacAddr    string
+	Hostname   string
+	ScanTime   time.Time
+	State      string
+	Ping       bool
+	GenerateOn string
+}
+
+var myHostname = "<unresolved>"
+
+func init() {
+	myHostname, _ = os.Hostname()
 }
 
 func DatabaseLocation() (*common.Reference, string, error) {
@@ -87,9 +101,12 @@ func callIPCommand() ([]byte, error) {
 	return stdout, nil
 }
 
-func ScanIntranet(create bool) error {
+func ScanIntranet(create, usePingCmd bool) error {
 
 	now := time.Now()
+
+	wg.Add(1)
+	go fping("192.168.178.0/24")
 
 	// Call IP command
 	stdout, err := callIPCommand()
@@ -113,6 +130,7 @@ func ScanIntranet(create bool) error {
 		}
 	}
 
+	wg.Wait()
 	reader := bytes.NewReader(stdout)
 	bufReader := bufio.NewReader(reader)
 	line, complete, err := bufReader.ReadLine()
@@ -133,16 +151,23 @@ func ScanIntranet(create bool) error {
 			if lerr != nil {
 				fmt.Println("Cannot resolv", vals[0])
 			}
-			lerr = ping(vals[0])
-			if lerr != nil {
-				fmt.Println("Cannot ping", vals[0])
+			if usePingCmd {
+				lerr = ping(vals[0])
+				if lerr != nil {
+					fmt.Println("Cannot ping", vals[0])
+				}
+			}
+			pingState := false
+			if ps, ok := stateMap[vals[0]]; ok {
+				pingState = ps
 			}
 			log.Log.Debugf(vals[0], laddr, state, complete, now.Format(timeFormat))
 			line, complete, err = bufReader.ReadLine()
 			hostname := "<unresolved>"
 			if len(laddr) > 0 {
 				hostname = laddr[0]
-				record := &hostEntry{vals[0], hostname, now, state}
+				record := &hostEntry{vals[0], vals[4], hostname, now,
+					state, pingState, myHostname}
 
 				insertPic := &common.Entries{Fields: insertFieldList,
 					DataStruct: record,
@@ -163,23 +188,39 @@ func ScanIntranet(create bool) error {
 }
 
 func ping(host string) error {
-	p := fastping.NewPinger()
-	ra, err := net.ResolveIPAddr("ip4:icmp", host)
-	if err != nil {
-		fmt.Println(err)
-		return err
+	out, _ := exec.Command("ping", host, "-c 2", "-i 3", "-w 10").Output()
+	if strings.Contains(string(out), "Destination Host Unreachable") {
+		fmt.Println("TANGO DOWN")
+	} else {
+		fmt.Println("IT'S ALIVEEE")
 	}
-	p.AddIPAddr(ra)
-	p.OnRecv = func(addr *net.IPAddr, rtt time.Duration) {
-		fmt.Printf("IP Addr: %s receive, RTT: %v\n", addr.String(), rtt)
+
+	return nil
+}
+
+func fping(network string) error {
+	fmt.Println("Call fping ....", network)
+	cmd := exec.Command("fping", "-g", network, "-r", "1")
+	stdout, _ := cmd.Output()
+	// fmt.Println("STDOUT:" + string(stdout))
+	defer wg.Done()
+
+	reader := bytes.NewReader(stdout)
+	bufReader := bufio.NewReader(reader)
+	line, complete, err := bufReader.ReadLine()
+	for err == nil {
+		vals := strings.Split(string(line), " ")
+		log.Log.Debugf("%v -> %v", complete, vals)
+		switch vals[2] {
+		case "alive":
+			stateMap[vals[0]] = true
+		case "unreachable":
+			stateMap[vals[0]] = false
+		default:
+			fmt.Println("Unknown output", vals)
+		}
+		line, complete, err = bufReader.ReadLine()
 	}
-	p.OnIdle = func() {
-		fmt.Println("finish")
-	}
-	err = p.Run()
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
+	fmt.Println("Ended fping")
 	return nil
 }
