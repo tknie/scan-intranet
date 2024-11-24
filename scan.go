@@ -39,7 +39,7 @@ const timeFormat = "2006-01-02 15:04:05"
 const tableName = "ScanIntranet"
 
 var insertFieldList = []string{"IP", "MACADDR", "Hostname",
-	"ScanTime", "State", "Generateon"}
+	"ScanTime", "State", "Ping", "Generateon"}
 
 var stateMap = make(map[string]bool)
 
@@ -158,9 +158,10 @@ func ScanIntranet(create, usePingCmd bool) error {
 				}
 			}
 			pingState := false
-			if ps, ok := stateMap[vals[0]]; ok {
+			if ok, ps := stateMap[vals[0]]; ok {
 				pingState = ps
 			}
+			// fmt.Println(vals[0], stateMap[vals[0]], pingState)
 			log.Log.Debugf(vals[0], laddr, state, complete, now.Format(timeFormat))
 			line, complete, err = bufReader.ReadLine()
 			hostname := "<unresolved>"
@@ -168,6 +169,7 @@ func ScanIntranet(create, usePingCmd bool) error {
 				hostname = laddr[0]
 				record := &hostEntry{vals[0], vals[4], hostname, now,
 					state, pingState, myHostname}
+				// fmt.Println(record.IP, record.Ping)
 
 				insertPic := &common.Entries{Fields: insertFieldList,
 					DataStruct: record,
@@ -221,6 +223,6 @@ func fping(network string) error {
 		}
 		line, complete, err = bufReader.ReadLine()
 	}
-	fmt.Println("Ended fping")
+	fmt.Println("Ended fping", stateMap["192.168.178.131"])
 	return nil
 }
