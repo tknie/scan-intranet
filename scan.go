@@ -93,7 +93,7 @@ func callIPCommand() ([]byte, error) {
 	tool := "ip"
 	args := []string{"neigh"}
 	cmd := exec.Command(tool, args...)
-	stdout, err := cmd.Output()
+	stdout, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil, err
@@ -190,7 +190,7 @@ func ScanIntranet(create, usePingCmd bool) error {
 }
 
 func ping(host string) error {
-	out, _ := exec.Command("ping", host, "-c 2", "-i 3", "-w 10").Output()
+	out, _ := exec.Command("ping", host, "-c 2", "-i 3", "-w 10").CombinedOutput()
 	if strings.Contains(string(out), "Destination Host Unreachable") {
 		fmt.Println("TANGO DOWN")
 	} else {
@@ -203,7 +203,7 @@ func ping(host string) error {
 func fping(network string) error {
 	fmt.Println("Call fping ....", network)
 	cmd := exec.Command("fping", "-g", network, "-r", "1")
-	stdout, _ := cmd.Output()
+	stdout, _ := cmd.CombinedOutput()
 	// fmt.Println("STDOUT:" + string(stdout))
 	defer wg.Done()
 
